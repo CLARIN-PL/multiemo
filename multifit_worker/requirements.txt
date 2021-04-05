@@ -1,0 +1,6 @@
+nlp_ws
+fastai==1.0.61
+sentencepiece==0.1.85
+sacremoses==0.0.35
+ninja==1.10.0.post1
+spacy==2.3.0

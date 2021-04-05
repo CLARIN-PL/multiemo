@@ -1,0 +1,5 @@
+.idea
+/idea
+log.txt
+__pycache__
+service.log
