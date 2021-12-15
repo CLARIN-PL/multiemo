@@ -1,0 +1,9 @@
+version: '3.3'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8744:8744"
+    environment:
+      API_WORKERS: 1
