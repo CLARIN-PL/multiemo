@@ -1,7 +1,0 @@
-fasttext
-nltk
-nlp_ws
-keras
-laserembeddings
-lpmn_client
-tensorflow
