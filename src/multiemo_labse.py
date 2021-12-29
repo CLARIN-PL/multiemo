@@ -43,7 +43,7 @@ class MultiEmoLabse(object):
         self.labse = CustomLabse()
 
     def predict(self, text, lang='pl', document_level='text'):
-        list_of_embeddings = self.labse.embbed(text)
+        list_of_embeddings = self.labse.embed(text)
         sentence_count = len(list_of_embeddings)
         # print(sentence_count)
         # print(list_of_embeddings)
@@ -80,3 +80,47 @@ class MultiEmoLabse(object):
                                  key=operator.itemgetter(1))[0]
         result['lang'] = lang
         return result
+
+    def batch_predict(self, texts, lang='pl', document_level='text'):
+        list_of_embeddings = self.labse.batch_embed(texts)
+        document_count = len(list_of_embeddings)
+        # print(sentence_count)
+        # print(list_of_embeddings)
+        embeddings = np.stack(list_of_embeddings, axis=0)
+        # print(embeddings)
+        # print(embeddings.shape)
+        fixed_embeddings = embeddings.reshape(embeddings.shape[0], embeddings.shape[1], embeddings.shape[2])
+
+        results = list()
+        if document_level == "sentence":
+            model = self.sent_sen
+        else:
+            model = self.sent
+
+        predict_results = model['model'].predict(fixed_embeddings)
+
+        for single_result in predict_results:
+            result_temp = dict()
+            predictions = {
+                model['labels'][ind]: score
+                for ind, score in enumerate(single_result)
+            }
+
+            new_predictions = dict()
+            for prediction in predictions:
+                if predictions[prediction] > 1:
+                    new_predictions[prediction] = str(1)
+                elif predictions[prediction] < 0:
+                    new_predictions[prediction] = str(0)
+                else:
+                    new_predictions[prediction] = str(round(
+                        predictions[prediction], 3))
+
+            predictions = new_predictions
+            result_temp['labels'] = predictions
+            result_temp['decision'] = max(predictions.items(),
+                                     key=operator.itemgetter(1))[0]
+            result_temp['lang'] = lang
+
+            results.append(result_temp)
+        return results

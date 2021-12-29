@@ -11,7 +11,7 @@ class CustomLabse:
         self.labse_tokenizer = AutoTokenizer.from_pretrained("pvl/labse_bert", do_lower_case=False)
         self.labse_model = AutoModel.from_pretrained("pvl/labse_bert")
 
-    def embbed(self, text):
+    def embed(self, text):
         lang = self.language_identification.predict_lang(text, None)
 
         with MosesSentenceSplitter(lang) as split_sents:
@@ -21,6 +21,12 @@ class CustomLabse:
             for sentence in text:
                 embeddings.append(custom_labse(sentence, self.labse_tokenizer, self.labse_model).detach().numpy())
             return embeddings
+    
+    def batch_embed(self, texts):
+        batch_embeddings = list()
+        for text in texts:
+            batch_embeddings.append(self.embed(text))
+        return batch_embeddings
 
 
 def mean_pooling(model_output, attention_mask):

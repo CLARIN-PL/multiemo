@@ -26,6 +26,9 @@ app.add_middleware(
 class TextRequest(BaseModel):
     text: str
 
+class BatchRequest(BaseModel):
+    texts: list
+
 
 @app.get("/")
 def read_root():
@@ -36,5 +39,12 @@ def read_root():
 def predict(request: TextRequest):
     start_time = time.time()
     results = multiemo.predict(request.text)
+    print('Processing text took: ', time.time() - start_time)
+    return results
+
+@app.post("/batch_predict")
+def predict(request: BatchRequest):
+    start_time = time.time()
+    results = multiemo.batch_predict(request.texts)
     print('Processing text took: ', time.time() - start_time)
     return results
