@@ -1,11 +1,14 @@
-from src.multiemo_labse import MultiEmoLabse
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import time
 
+from src.multiemo_labse import MultiEmoLabse
+from src.multiemo_laser import MultiEmoLaser
+
 start_time = time.time()
 multiemo = MultiEmoLabse()
+multiemo_laser = MultiEmoLaser()
 print('MultiEmo loading took: ', time.time() - start_time)
 
 app = FastAPI()
@@ -39,6 +42,13 @@ def read_root():
 def predict(request: TextRequest):
     start_time = time.time()
     results = multiemo.predict(request.text)
+    print('Processing text took: ', time.time() - start_time)
+    return results
+
+@app.post("/predict_laser")
+def predict(request: TextRequest):
+    start_time = time.time()
+    results = multiemo_laser.predict(request.text)
     print('Processing text took: ', time.time() - start_time)
     return results
 

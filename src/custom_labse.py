@@ -16,7 +16,7 @@ class CustomLabse:
 
         with MosesSentenceSplitter(lang) as split_sents:
             text = split_sents([text])
-            print(text)
+            # print(text)
             embeddings = []
             for sentence in text:
                 embeddings.append(custom_labse(sentence, self.labse_tokenizer, self.labse_model).detach().numpy())
